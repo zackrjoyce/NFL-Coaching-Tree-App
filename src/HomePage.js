@@ -1,13 +1,18 @@
 import React from 'react';
-import './HomePage.css'; // Create a CSS file for styling
+import { Link } from 'react-router-dom';
+import './HomePage.css';
 
 const HomePage = () => {
     return (
         <div className="centered-container">
-            <button className="button">Look Up Coaching Trees</button>
-            <button className="button">Upload Data/Update Coaching Trees</button>
+            <Link to="/user">
+                <button className="button">Look Up Coaching Trees</button>
+            </Link>
+            <Link to="/admin">
+                <button className="button">Upload Data/Update Coaching Trees</button>
+            </Link>
         </div>
     );
-}
+};
 
 export default HomePage;

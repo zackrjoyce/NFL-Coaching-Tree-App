@@ -10,6 +10,11 @@
       "StackName": "amplify-amplifyda805a50d9624-staging-210636",
       "StackId": "arn:aws:cloudformation:us-east-2:674876438621:stack/amplify-amplifyda805a50d9624-staging-210636/92a44930-6167-11ee-95f5-0a71bd9a9ccb",
       "AmplifyAppId": "d1377fz3pc50nt"
+    },
+    "categories": {
+      "auth": {
+        "nflcoachingtreeapp6a9b5a7a": {}
+      }
     }
   }
 }
