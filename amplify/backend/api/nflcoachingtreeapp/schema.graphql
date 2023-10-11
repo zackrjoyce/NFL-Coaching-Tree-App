@@ -1,0 +1,34 @@
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type Matchup @model {
+  id: ID!
+  team1_hc: String!
+  team1_oc: String!
+  team1_dc: String!
+  team2_hc: String!
+  team2_oc: String!
+  team2_dc: String!
+  turnover_dif: String!
+  team1_score: String!
+  team2_score: String!
+}
+
+type CoachingTree @model {
+    id: ID!
+    hc: String
+    oc: String
+    dc: String
+}
+
+type Mutation {
+    createOrUpdateCoachingTree(input: CoachingTreeInput!): CoachingTree
+}
+
+input CoachingTreeInput {
+    id: ID!
+    hc: String
+    oc: String
+    dc: String
+}
