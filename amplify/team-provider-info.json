@@ -17,6 +17,9 @@
       },
       "api": {
         "nflcoachingtreeapp": {}
+      },
+      "storage": {
+        "nflcoachingtreeapp": {}
       }
     }
   }

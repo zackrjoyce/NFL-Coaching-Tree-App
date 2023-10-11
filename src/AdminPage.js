@@ -32,7 +32,7 @@ const AdminPage = () => {
         try {
             // Make an API call to update/create the coachingTree document
             await API.graphql({
-                query: createOrUpdateCoachingTreeMutation, // Define the mutation query
+                query: createOrUpdateCoachingTree, // Define the mutation query
                 variables: { input: coachingTree },
             });
 

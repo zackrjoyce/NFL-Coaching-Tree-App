@@ -1,36 +1,102 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateNote = /* GraphQL */ `
-  subscription OnCreateNote($filter: ModelSubscriptionNoteFilterInput) {
-    onCreateNote(filter: $filter) {
+export const onCreateMatchup = /* GraphQL */ `
+  subscription OnCreateMatchup($filter: ModelSubscriptionMatchupFilterInput) {
+    onCreateMatchup(filter: $filter) {
       id
-      name
-      description
+      team1_hc
+      team1_oc
+      team1_dc
+      team2_hc
+      team2_oc
+      team2_dc
+      turnover_dif
+      team1_score
+      team2_score
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const onUpdateNote = /* GraphQL */ `
-  subscription OnUpdateNote($filter: ModelSubscriptionNoteFilterInput) {
-    onUpdateNote(filter: $filter) {
+export const onUpdateMatchup = /* GraphQL */ `
+  subscription OnUpdateMatchup($filter: ModelSubscriptionMatchupFilterInput) {
+    onUpdateMatchup(filter: $filter) {
       id
-      name
-      description
+      team1_hc
+      team1_oc
+      team1_dc
+      team2_hc
+      team2_oc
+      team2_dc
+      turnover_dif
+      team1_score
+      team2_score
       createdAt
       updatedAt
       __typename
     }
   }
 `;
-export const onDeleteNote = /* GraphQL */ `
-  subscription OnDeleteNote($filter: ModelSubscriptionNoteFilterInput) {
-    onDeleteNote(filter: $filter) {
+export const onDeleteMatchup = /* GraphQL */ `
+  subscription OnDeleteMatchup($filter: ModelSubscriptionMatchupFilterInput) {
+    onDeleteMatchup(filter: $filter) {
       id
-      name
-      description
+      team1_hc
+      team1_oc
+      team1_dc
+      team2_hc
+      team2_oc
+      team2_dc
+      turnover_dif
+      team1_score
+      team2_score
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateCoachingTree = /* GraphQL */ `
+  subscription OnCreateCoachingTree(
+    $filter: ModelSubscriptionCoachingTreeFilterInput
+  ) {
+    onCreateCoachingTree(filter: $filter) {
+      id
+      hc
+      oc
+      dc
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateCoachingTree = /* GraphQL */ `
+  subscription OnUpdateCoachingTree(
+    $filter: ModelSubscriptionCoachingTreeFilterInput
+  ) {
+    onUpdateCoachingTree(filter: $filter) {
+      id
+      hc
+      oc
+      dc
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteCoachingTree = /* GraphQL */ `
+  subscription OnDeleteCoachingTree(
+    $filter: ModelSubscriptionCoachingTreeFilterInput
+  ) {
+    onDeleteCoachingTree(filter: $filter) {
+      id
+      hc
+      oc
+      dc
       createdAt
       updatedAt
       __typename
