@@ -1,6 +1,19 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getCoachTree = /* GraphQL */ `
+  query GetCoachTree($id: ID!) {
+    getCoachTree(id: $id) {
+      id
+      hc
+      oc
+      dc
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const getMatchup = /* GraphQL */ `
   query GetMatchup($id: ID!) {
     getMatchup(id: $id) {

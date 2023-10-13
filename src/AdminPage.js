@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { API } from 'aws-amplify';
 import { createOrUpdateCoachingTree } from './graphql/mutations';
-
+import { getCoachTree } from './graphql/queries';
 import './AdminPage.css'; // Import the CSS file
 
 const AdminPage = () => {
@@ -11,12 +11,78 @@ const AdminPage = () => {
     const [hcValue, setHcValue] = useState('');
     const [ocValue, setOcValue] = useState('');
     const [dcValue, setDcValue] = useState('');
+    const [coachingTreeData, setCoachingTreeData] = useState(null);
+    const [coachTreeData, setCoachTreeData] = useState(null);
+
+    useEffect(() => {
+        console.log("DEBUG");
+        const id = 'Titans'; // Replace with the desired ID
+        const fetchCoachTreeData = async () => {
+            try {
+                // Retrieve data by ID using a GraphQL query
+                const response = await API.graphql({
+                    query: `
+                       query GetCoachTree {
+                           getCoachTree(id: "${id}") {
+                               hc
+                               oc
+                               dc
+                           }
+                       }
+                   `
+                });
+
+                const coachTree = response.data.getCoachTree;
+                setCoachTreeData(coachTree);
+            } catch (error) {
+                console.error('Error fetching coach tree data:', error);
+            }
+        };
+
+        fetchCoachTreeData();
+    }, []);
+
+    /*
+    useEffect(() => {
+        fetchCoachingTreeData();
+    }, [selectedTeam]);
+
+
+    const fetchCoachingTreeData = async () => {
+        if (!selectedTeam) {
+            return; // No team selected
+        }
+
+        try {
+            const response = await API.graphql({
+                query: getCoachTree,
+                variables: {
+                    id: selectedTeam, // Replace with the actual ID
+                },
+            });
+
+            const coachingTree = response.data.getCoachTree;
+            if (coachingTree) {
+                // Update state with the fetched coaching tree data
+                alert('Data retreived: ' + coachingTree.hc + ' ' + coachingTree.oc + ' ' + coachingTree.dc);
+                setCoachingTreeData(coachingTree);
+                setHcValue(coachingTree.hc);
+                setOcValue(coachingTree.oc);
+                setDcValue(coachingTree.dc);
+            }
+        } catch (error) {
+            alert('Error fetching coaching tree data:', error);
+        }
+    };
+    */
 
     const handleTeamChange = (event) => {
+        console.log("DEBUG");
         setSelectedTeam(event.target.value);
     };
 
     const handleSetCoachingTree = async () => {
+        console.log("DEBUG");
         // Validate that the selectedTeam is not empty
         if (!selectedTeam) {
             alert('Please select a team.');
@@ -106,6 +172,7 @@ const AdminPage = () => {
                     <input
                         type="text"
                         id="hc"
+                        placeholder={coachingTreeData ? coachingTreeData.hc : ''}
                         value={hcValue}
                         onChange={(e) => setHcValue(e.target.value)}
                     />
@@ -115,6 +182,7 @@ const AdminPage = () => {
                     <input
                         type="text"
                         id="oc"
+                        placeholder={coachingTreeData ? coachingTreeData.oc : ''}
                         value={ocValue}
                         onChange={(e) => setOcValue(e.target.value)}
                     />
@@ -124,10 +192,22 @@ const AdminPage = () => {
                     <input
                         type="text"
                         id="dc"
+                        placeholder={coachingTreeData ? coachingTreeData.dc : ''}
                         value={dcValue}
                         onChange={(e) => setDcValue(e.target.value)}
                     />
                 </div>
+            </div>
+            <div>
+                {coachTreeData ? (
+                    <div>
+                        <p>Head Coach: {coachTreeData.hc}</p>
+                        <p>Offensive Coordinator: {coachTreeData.oc}</p>
+                        <p>Defensive Coordinator: {coachTreeData.dc}</p>
+                    </div>
+                ) : (
+                    <p>Loading coach tree data...</p>
+                )}
             </div>
         </div>
     );
