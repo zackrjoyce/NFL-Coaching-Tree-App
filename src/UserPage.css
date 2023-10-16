@@ -33,14 +33,13 @@
     left: 0;
     right: 0;
     margin: 0 auto;
-    top: 75%; /* Position it vertically halfway between the top and bottom */
-    transform: translateY(-75%); /* Adjust to center vertically */
+    top: 60%; /* Position it vertically halfway between the top and bottom */
+    transform: translateY(-60%); /* Adjust to center vertically */
     text-align: center;
 }
 
 .scrollView {
     margin: 0 auto;
-    max-width: 600px; /* Adjust the maximum width as needed */
     padding: 20px;
     background-color: #fff; /* Background color for the scroll view container */
     box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.2); /* Optional: Add a shadow effect */

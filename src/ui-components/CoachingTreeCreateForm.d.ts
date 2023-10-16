@@ -13,11 +13,13 @@ export declare type ValidationResponse = {
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
 export declare type CoachingTreeCreateFormInputValues = {
+    id?: string;
     hc?: string;
     oc?: string;
     dc?: string;
 };
 export declare type CoachingTreeCreateFormValidationValues = {
+    id?: ValidationFunction<string>;
     hc?: ValidationFunction<string>;
     oc?: ValidationFunction<string>;
     dc?: ValidationFunction<string>;
@@ -25,6 +27,7 @@ export declare type CoachingTreeCreateFormValidationValues = {
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type CoachingTreeCreateFormOverridesProps = {
     CoachingTreeCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
+    id?: PrimitiveOverrideProps<TextFieldProps>;
     hc?: PrimitiveOverrideProps<TextFieldProps>;
     oc?: PrimitiveOverrideProps<TextFieldProps>;
     dc?: PrimitiveOverrideProps<TextFieldProps>;

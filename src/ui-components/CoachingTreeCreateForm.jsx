@@ -23,21 +23,25 @@ export default function CoachingTreeCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
+    id: "",
     hc: "",
     oc: "",
     dc: "",
   };
+  const [id, setId] = React.useState(initialValues.id);
   const [hc, setHc] = React.useState(initialValues.hc);
   const [oc, setOc] = React.useState(initialValues.oc);
   const [dc, setDc] = React.useState(initialValues.dc);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
+    setId(initialValues.id);
     setHc(initialValues.hc);
     setOc(initialValues.oc);
     setDc(initialValues.dc);
     setErrors({});
   };
   const validations = {
+    id: [{ type: "Required" }],
     hc: [],
     oc: [],
     dc: [],
@@ -68,6 +72,7 @@ export default function CoachingTreeCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
+          id,
           hc,
           oc,
           dc,
@@ -125,6 +130,33 @@ export default function CoachingTreeCreateForm(props) {
       {...rest}
     >
       <TextField
+        label="Id"
+        isRequired={true}
+        isReadOnly={false}
+        value={id}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id: value,
+              hc,
+              oc,
+              dc,
+            };
+            const result = onChange(modelFields);
+            value = result?.id ?? value;
+          }
+          if (errors.id?.hasError) {
+            runValidationTasks("id", value);
+          }
+          setId(value);
+        }}
+        onBlur={() => runValidationTasks("id", id)}
+        errorMessage={errors.id?.errorMessage}
+        hasError={errors.id?.hasError}
+        {...getOverrideProps(overrides, "id")}
+      ></TextField>
+      <TextField
         label="Hc"
         isRequired={false}
         isReadOnly={false}
@@ -133,6 +165,7 @@ export default function CoachingTreeCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               hc: value,
               oc,
               dc,
@@ -159,6 +192,7 @@ export default function CoachingTreeCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               hc,
               oc: value,
               dc,
@@ -185,6 +219,7 @@ export default function CoachingTreeCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               hc,
               oc,
               dc: value,

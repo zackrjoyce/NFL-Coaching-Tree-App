@@ -25,10 +25,12 @@ export default function CoachingTreeUpdateForm(props) {
     ...rest
   } = props;
   const initialValues = {
+    id: "",
     hc: "",
     oc: "",
     dc: "",
   };
+  const [id, setId] = React.useState(initialValues.id);
   const [hc, setHc] = React.useState(initialValues.hc);
   const [oc, setOc] = React.useState(initialValues.oc);
   const [dc, setDc] = React.useState(initialValues.dc);
@@ -37,6 +39,7 @@ export default function CoachingTreeUpdateForm(props) {
     const cleanValues = coachingTreeRecord
       ? { ...initialValues, ...coachingTreeRecord }
       : initialValues;
+    setId(cleanValues.id);
     setHc(cleanValues.hc);
     setOc(cleanValues.oc);
     setDc(cleanValues.dc);
@@ -61,6 +64,7 @@ export default function CoachingTreeUpdateForm(props) {
   }, [idProp, coachingTreeModelProp]);
   React.useEffect(resetStateValues, [coachingTreeRecord]);
   const validations = {
+    id: [{ type: "Required" }],
     hc: [],
     oc: [],
     dc: [],
@@ -91,6 +95,7 @@ export default function CoachingTreeUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
+          id,
           hc: hc ?? null,
           oc: oc ?? null,
           dc: dc ?? null,
@@ -146,6 +151,33 @@ export default function CoachingTreeUpdateForm(props) {
       {...rest}
     >
       <TextField
+        label="Id"
+        isRequired={true}
+        isReadOnly={true}
+        value={id}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id: value,
+              hc,
+              oc,
+              dc,
+            };
+            const result = onChange(modelFields);
+            value = result?.id ?? value;
+          }
+          if (errors.id?.hasError) {
+            runValidationTasks("id", value);
+          }
+          setId(value);
+        }}
+        onBlur={() => runValidationTasks("id", id)}
+        errorMessage={errors.id?.errorMessage}
+        hasError={errors.id?.hasError}
+        {...getOverrideProps(overrides, "id")}
+      ></TextField>
+      <TextField
         label="Hc"
         isRequired={false}
         isReadOnly={false}
@@ -154,6 +186,7 @@ export default function CoachingTreeUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               hc: value,
               oc,
               dc,
@@ -180,6 +213,7 @@ export default function CoachingTreeUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               hc,
               oc: value,
               dc,
@@ -206,6 +240,7 @@ export default function CoachingTreeUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               hc,
               oc,
               dc: value,

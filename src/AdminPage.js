@@ -1,135 +1,104 @@
 import React, { useState, useEffect } from 'react';
-import { API } from 'aws-amplify';
-import { createOrUpdateCoachingTree } from './graphql/mutations';
-import { getCoachTree } from './graphql/queries';
+import { API, graphqlOperation } from 'aws-amplify';
+import awsconfig from './aws-exports';
 import './AdminPage.css'; // Import the CSS file
+import ExcelReader from './ExcelReader';
 
 const AdminPage = () => {
-
-    // Create state variables for dropdown and text entry values
+    const [data, setData] = useState(null);
     const [selectedTeam, setSelectedTeam] = useState('');
     const [hcValue, setHcValue] = useState('');
     const [ocValue, setOcValue] = useState('');
     const [dcValue, setDcValue] = useState('');
-    const [coachingTreeData, setCoachingTreeData] = useState(null);
-    const [coachTreeData, setCoachTreeData] = useState(null);
-
-    useEffect(() => {
-        console.log("DEBUG");
-        const id = 'Titans'; // Replace with the desired ID
-        const fetchCoachTreeData = async () => {
-            try {
-                // Retrieve data by ID using a GraphQL query
-                const response = await API.graphql({
-                    query: `
-                       query GetCoachTree {
-                           getCoachTree(id: "${id}") {
-                               hc
-                               oc
-                               dc
-                           }
-                       }
-                   `
-                });
-
-                const coachTree = response.data.getCoachTree;
-                setCoachTreeData(coachTree);
-            } catch (error) {
-                console.error('Error fetching coach tree data:', error);
-            }
-        };
-
-        fetchCoachTreeData();
-    }, []);
-
-    /*
-    useEffect(() => {
-        fetchCoachingTreeData();
-    }, [selectedTeam]);
-
-
-    const fetchCoachingTreeData = async () => {
-        if (!selectedTeam) {
-            return; // No team selected
-        }
-
-        try {
-            const response = await API.graphql({
-                query: getCoachTree,
-                variables: {
-                    id: selectedTeam, // Replace with the actual ID
-                },
-            });
-
-            const coachingTree = response.data.getCoachTree;
-            if (coachingTree) {
-                // Update state with the fetched coaching tree data
-                alert('Data retreived: ' + coachingTree.hc + ' ' + coachingTree.oc + ' ' + coachingTree.dc);
-                setCoachingTreeData(coachingTree);
-                setHcValue(coachingTree.hc);
-                setOcValue(coachingTree.oc);
-                setDcValue(coachingTree.dc);
-            }
-        } catch (error) {
-            alert('Error fetching coaching tree data:', error);
-        }
-    };
-    */
 
     const handleTeamChange = (event) => {
-        console.log("DEBUG");
-        setSelectedTeam(event.target.value);
+        const team = event.target.value;
+        setSelectedTeam(team);
+        if (team) {
+            fetchData(team);
+        }
     };
 
-    const handleSetCoachingTree = async () => {
-        console.log("DEBUG");
-        // Validate that the selectedTeam is not empty
-        if (!selectedTeam) {
-            alert('Please select a team.');
-            return;
-        }
-
-        // Create a DynamoDB document to update/create
-        const coachingTree = {
-            id: selectedTeam, // Use the selected team as the document ID
-            hc: hcValue,
-            oc: ocValue,
-            dc: dcValue,
-        };
+    const fetchData = async (id) => {
+        let getCoachingTreeQuery = /* GraphQL */ `
+  query MyQuery {
+    getCoachingTree(id: "${id}") {
+      id
+      hc
+      oc
+      dc
+    }
+  }
+`;
 
         try {
-            // Make an API call to update/create the coachingTree document
-            await API.graphql({
-                query: createOrUpdateCoachingTree, // Define the mutation query
-                variables: { input: coachingTree },
-            });
+            const response = await API.graphql(graphqlOperation(getCoachingTreeQuery));
+            const responseData = response.data.getCoachingTree;
 
-            // Clear the text entry boxes after a successful update
+            // Handle the data (in this case, we're logging it)
+            console.log(responseData);
+            setData(responseData);
+
+            // Set placeholder values for hc, oc, and dc
+            setHcValue(responseData.hc || '');
+            setOcValue(responseData.oc || '');
+            setDcValue(responseData.dc || '');
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            // Set placeholder values for hc, oc, and dc
             setHcValue('');
             setOcValue('');
             setDcValue('');
-
-            alert('Coaching tree updated successfully!');
-        } catch (error) {
-            console.error('Error updating coaching tree:', error);
         }
     };
+
+    // Call the fetchData function to execute the query
+
+    const handleSetCoachingTree = async () => {
+        if (selectedTeam) {
+            const input = {
+                id: selectedTeam,
+                hc: hcValue,
+                oc: ocValue,
+                dc: dcValue,
+            };
+
+            let createOrUpdateCoachingTreeMutation = /* GraphQL */ `
+  mutation MyMutation {
+    updateCoachingTree(input: {dc: "${input.dc}", hc: "${input.hc}", id: "${input.id}", oc: "${input.oc}"}) {
+  	  id
+    }
+  }`;
+            console.log(createOrUpdateCoachingTreeMutation);
+
+            try {
+                const response = await API.graphql(graphqlOperation(createOrUpdateCoachingTreeMutation));
+
+                console.log('Mutation response:', response);
+
+                // You can choose to update the data state if needed
+                fetchData(selectedTeam);
+            } catch (error) {
+                console.error("Error updating data:", error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchData(selectedTeam); // Load initial data if a team is pre-selected
+    }, [selectedTeam]);
 
     return (
         <div>
             <h1>Select file to upload to database</h1>
             <div>
-                <input type="file" id="fileInput" accept=".xlsx, .xls" /> {/* Restrict to Excel files */}
-                <button>Upload</button>
+                <ExcelReader /> {/* Render the ExcelReader component here */}
             </div>
             <h1 className="centered-header" style={{ marginTop: '20px' }}>
                 Select team to change coaching tree
             </h1>
             <div className="centered-elements" style={{ marginTop: '20px' }}>
-                <select
-                    value={selectedTeam}
-                    onChange={handleTeamChange}
-                >
+                <select value={selectedTeam} onChange={(e) => setSelectedTeam(e.target.value)}>
                     <option value="">Select Team</option>
                     <option value="Cardinals">Arizona Cardinals</option>
                     <option value="Falcons">Atlanta Falcons</option>
@@ -169,45 +138,16 @@ const AdminPage = () => {
             <div className="text-entry-boxes" style={{ marginTop: '20px' }}>
                 <div>
                     <label htmlFor="hc">Head Coach:</label>
-                    <input
-                        type="text"
-                        id="hc"
-                        placeholder={coachingTreeData ? coachingTreeData.hc : ''}
-                        value={hcValue}
-                        onChange={(e) => setHcValue(e.target.value)}
-                    />
+                    <input type="text" id="hc" value={hcValue} onChange={(e) => setHcValue(e.target.value)} />
                 </div>
                 <div>
                     <label htmlFor="oc">Offensive Coordinator:</label>
-                    <input
-                        type="text"
-                        id="oc"
-                        placeholder={coachingTreeData ? coachingTreeData.oc : ''}
-                        value={ocValue}
-                        onChange={(e) => setOcValue(e.target.value)}
-                    />
+                    <input type="text" id="oc" value={ocValue} onChange={(e) => setOcValue(e.target.value)} />
                 </div>
                 <div>
                     <label htmlFor="dc">Defensive Coordinator:</label>
-                    <input
-                        type="text"
-                        id="dc"
-                        placeholder={coachingTreeData ? coachingTreeData.dc : ''}
-                        value={dcValue}
-                        onChange={(e) => setDcValue(e.target.value)}
-                    />
+                    <input type="text" id="dc" value={dcValue} onChange={(e) => setDcValue(e.target.value)} />
                 </div>
-            </div>
-            <div>
-                {coachTreeData ? (
-                    <div>
-                        <p>Head Coach: {coachTreeData.hc}</p>
-                        <p>Offensive Coordinator: {coachTreeData.oc}</p>
-                        <p>Defensive Coordinator: {coachTreeData.dc}</p>
-                    </div>
-                ) : (
-                    <p>Loading coach tree data...</p>
-                )}
             </div>
         </div>
     );

@@ -21,15 +21,19 @@ export const createMatchup = /* GraphQL */ `
   ) {
     createMatchup(input: $input, condition: $condition) {
       id
+      team1
       team1_hc
       team1_oc
       team1_dc
+      team1_score
+      team2
       team2_hc
       team2_oc
       team2_dc
-      turnover_dif
-      team1_score
       team2_score
+      injury
+      tanking
+      turnover_dif
       createdAt
       updatedAt
       __typename
@@ -43,15 +47,19 @@ export const updateMatchup = /* GraphQL */ `
   ) {
     updateMatchup(input: $input, condition: $condition) {
       id
+      team1
       team1_hc
       team1_oc
       team1_dc
+      team1_score
+      team2
       team2_hc
       team2_oc
       team2_dc
-      turnover_dif
-      team1_score
       team2_score
+      injury
+      tanking
+      turnover_dif
       createdAt
       updatedAt
       __typename
@@ -65,15 +73,19 @@ export const deleteMatchup = /* GraphQL */ `
   ) {
     deleteMatchup(input: $input, condition: $condition) {
       id
+      team1
       team1_hc
       team1_oc
       team1_dc
+      team1_score
+      team2
       team2_hc
       team2_oc
       team2_dc
-      turnover_dif
-      team1_score
       team2_score
+      injury
+      tanking
+      turnover_dif
       createdAt
       updatedAt
       __typename

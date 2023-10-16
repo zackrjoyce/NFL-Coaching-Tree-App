@@ -25,45 +25,60 @@ export default function MatchupUpdateForm(props) {
     ...rest
   } = props;
   const initialValues = {
+    id: "",
+    team1: "",
     team1_hc: "",
     team1_oc: "",
     team1_dc: "",
+    team1_score: "",
+    team2: "",
     team2_hc: "",
     team2_oc: "",
     team2_dc: "",
-    turnover_dif: "",
-    team1_score: "",
     team2_score: "",
+    injury: "",
+    tanking: "",
+    turnover_dif: "",
   };
+  const [id, setId] = React.useState(initialValues.id);
+  const [team1, setTeam1] = React.useState(initialValues.team1);
   const [team1_hc, setTeam1_hc] = React.useState(initialValues.team1_hc);
   const [team1_oc, setTeam1_oc] = React.useState(initialValues.team1_oc);
   const [team1_dc, setTeam1_dc] = React.useState(initialValues.team1_dc);
-  const [team2_hc, setTeam2_hc] = React.useState(initialValues.team2_hc);
-  const [team2_oc, setTeam2_oc] = React.useState(initialValues.team2_oc);
-  const [team2_dc, setTeam2_dc] = React.useState(initialValues.team2_dc);
-  const [turnover_dif, setTurnover_dif] = React.useState(
-    initialValues.turnover_dif
-  );
   const [team1_score, setTeam1_score] = React.useState(
     initialValues.team1_score
   );
+  const [team2, setTeam2] = React.useState(initialValues.team2);
+  const [team2_hc, setTeam2_hc] = React.useState(initialValues.team2_hc);
+  const [team2_oc, setTeam2_oc] = React.useState(initialValues.team2_oc);
+  const [team2_dc, setTeam2_dc] = React.useState(initialValues.team2_dc);
   const [team2_score, setTeam2_score] = React.useState(
     initialValues.team2_score
+  );
+  const [injury, setInjury] = React.useState(initialValues.injury);
+  const [tanking, setTanking] = React.useState(initialValues.tanking);
+  const [turnover_dif, setTurnover_dif] = React.useState(
+    initialValues.turnover_dif
   );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = matchupRecord
       ? { ...initialValues, ...matchupRecord }
       : initialValues;
+    setId(cleanValues.id);
+    setTeam1(cleanValues.team1);
     setTeam1_hc(cleanValues.team1_hc);
     setTeam1_oc(cleanValues.team1_oc);
     setTeam1_dc(cleanValues.team1_dc);
+    setTeam1_score(cleanValues.team1_score);
+    setTeam2(cleanValues.team2);
     setTeam2_hc(cleanValues.team2_hc);
     setTeam2_oc(cleanValues.team2_oc);
     setTeam2_dc(cleanValues.team2_dc);
-    setTurnover_dif(cleanValues.turnover_dif);
-    setTeam1_score(cleanValues.team1_score);
     setTeam2_score(cleanValues.team2_score);
+    setInjury(cleanValues.injury);
+    setTanking(cleanValues.tanking);
+    setTurnover_dif(cleanValues.turnover_dif);
     setErrors({});
   };
   const [matchupRecord, setMatchupRecord] = React.useState(matchupModelProp);
@@ -83,15 +98,20 @@ export default function MatchupUpdateForm(props) {
   }, [idProp, matchupModelProp]);
   React.useEffect(resetStateValues, [matchupRecord]);
   const validations = {
+    id: [{ type: "Required" }],
+    team1: [{ type: "Required" }],
     team1_hc: [{ type: "Required" }],
     team1_oc: [{ type: "Required" }],
     team1_dc: [{ type: "Required" }],
+    team1_score: [{ type: "Required" }],
+    team2: [{ type: "Required" }],
     team2_hc: [{ type: "Required" }],
     team2_oc: [{ type: "Required" }],
     team2_dc: [{ type: "Required" }],
-    turnover_dif: [{ type: "Required" }],
-    team1_score: [{ type: "Required" }],
     team2_score: [{ type: "Required" }],
+    injury: [],
+    tanking: [],
+    turnover_dif: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -119,15 +139,20 @@ export default function MatchupUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
+          id,
+          team1,
           team1_hc,
           team1_oc,
           team1_dc,
+          team1_score,
+          team2,
           team2_hc,
           team2_oc,
           team2_dc,
-          turnover_dif,
-          team1_score,
           team2_score,
+          injury: injury ?? null,
+          tanking: tanking ?? null,
+          turnover_dif: turnover_dif ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -180,6 +205,80 @@ export default function MatchupUpdateForm(props) {
       {...rest}
     >
       <TextField
+        label="Id"
+        isRequired={true}
+        isReadOnly={true}
+        value={id}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id: value,
+              team1,
+              team1_hc,
+              team1_oc,
+              team1_dc,
+              team1_score,
+              team2,
+              team2_hc,
+              team2_oc,
+              team2_dc,
+              team2_score,
+              injury,
+              tanking,
+              turnover_dif,
+            };
+            const result = onChange(modelFields);
+            value = result?.id ?? value;
+          }
+          if (errors.id?.hasError) {
+            runValidationTasks("id", value);
+          }
+          setId(value);
+        }}
+        onBlur={() => runValidationTasks("id", id)}
+        errorMessage={errors.id?.errorMessage}
+        hasError={errors.id?.hasError}
+        {...getOverrideProps(overrides, "id")}
+      ></TextField>
+      <TextField
+        label="Team1"
+        isRequired={true}
+        isReadOnly={false}
+        value={team1}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              team1: value,
+              team1_hc,
+              team1_oc,
+              team1_dc,
+              team1_score,
+              team2,
+              team2_hc,
+              team2_oc,
+              team2_dc,
+              team2_score,
+              injury,
+              tanking,
+              turnover_dif,
+            };
+            const result = onChange(modelFields);
+            value = result?.team1 ?? value;
+          }
+          if (errors.team1?.hasError) {
+            runValidationTasks("team1", value);
+          }
+          setTeam1(value);
+        }}
+        onBlur={() => runValidationTasks("team1", team1)}
+        errorMessage={errors.team1?.errorMessage}
+        hasError={errors.team1?.hasError}
+        {...getOverrideProps(overrides, "team1")}
+      ></TextField>
+      <TextField
         label="Team1 hc"
         isRequired={true}
         isReadOnly={false}
@@ -188,15 +287,20 @@ export default function MatchupUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
+              team1,
               team1_hc: value,
               team1_oc,
               team1_dc,
+              team1_score,
+              team2,
               team2_hc,
               team2_oc,
               team2_dc,
-              turnover_dif,
-              team1_score,
               team2_score,
+              injury,
+              tanking,
+              turnover_dif,
             };
             const result = onChange(modelFields);
             value = result?.team1_hc ?? value;
@@ -220,15 +324,20 @@ export default function MatchupUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
+              team1,
               team1_hc,
               team1_oc: value,
               team1_dc,
+              team1_score,
+              team2,
               team2_hc,
               team2_oc,
               team2_dc,
-              turnover_dif,
-              team1_score,
               team2_score,
+              injury,
+              tanking,
+              turnover_dif,
             };
             const result = onChange(modelFields);
             value = result?.team1_oc ?? value;
@@ -252,15 +361,20 @@ export default function MatchupUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
+              team1,
               team1_hc,
               team1_oc,
               team1_dc: value,
+              team1_score,
+              team2,
               team2_hc,
               team2_oc,
               team2_dc,
-              turnover_dif,
-              team1_score,
               team2_score,
+              injury,
+              tanking,
+              turnover_dif,
             };
             const result = onChange(modelFields);
             value = result?.team1_dc ?? value;
@@ -276,6 +390,80 @@ export default function MatchupUpdateForm(props) {
         {...getOverrideProps(overrides, "team1_dc")}
       ></TextField>
       <TextField
+        label="Team1 score"
+        isRequired={true}
+        isReadOnly={false}
+        value={team1_score}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              team1,
+              team1_hc,
+              team1_oc,
+              team1_dc,
+              team1_score: value,
+              team2,
+              team2_hc,
+              team2_oc,
+              team2_dc,
+              team2_score,
+              injury,
+              tanking,
+              turnover_dif,
+            };
+            const result = onChange(modelFields);
+            value = result?.team1_score ?? value;
+          }
+          if (errors.team1_score?.hasError) {
+            runValidationTasks("team1_score", value);
+          }
+          setTeam1_score(value);
+        }}
+        onBlur={() => runValidationTasks("team1_score", team1_score)}
+        errorMessage={errors.team1_score?.errorMessage}
+        hasError={errors.team1_score?.hasError}
+        {...getOverrideProps(overrides, "team1_score")}
+      ></TextField>
+      <TextField
+        label="Team2"
+        isRequired={true}
+        isReadOnly={false}
+        value={team2}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              team1,
+              team1_hc,
+              team1_oc,
+              team1_dc,
+              team1_score,
+              team2: value,
+              team2_hc,
+              team2_oc,
+              team2_dc,
+              team2_score,
+              injury,
+              tanking,
+              turnover_dif,
+            };
+            const result = onChange(modelFields);
+            value = result?.team2 ?? value;
+          }
+          if (errors.team2?.hasError) {
+            runValidationTasks("team2", value);
+          }
+          setTeam2(value);
+        }}
+        onBlur={() => runValidationTasks("team2", team2)}
+        errorMessage={errors.team2?.errorMessage}
+        hasError={errors.team2?.hasError}
+        {...getOverrideProps(overrides, "team2")}
+      ></TextField>
+      <TextField
         label="Team2 hc"
         isRequired={true}
         isReadOnly={false}
@@ -284,15 +472,20 @@ export default function MatchupUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
+              team1,
               team1_hc,
               team1_oc,
               team1_dc,
+              team1_score,
+              team2,
               team2_hc: value,
               team2_oc,
               team2_dc,
-              turnover_dif,
-              team1_score,
               team2_score,
+              injury,
+              tanking,
+              turnover_dif,
             };
             const result = onChange(modelFields);
             value = result?.team2_hc ?? value;
@@ -316,15 +509,20 @@ export default function MatchupUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
+              team1,
               team1_hc,
               team1_oc,
               team1_dc,
+              team1_score,
+              team2,
               team2_hc,
               team2_oc: value,
               team2_dc,
-              turnover_dif,
-              team1_score,
               team2_score,
+              injury,
+              tanking,
+              turnover_dif,
             };
             const result = onChange(modelFields);
             value = result?.team2_oc ?? value;
@@ -348,15 +546,20 @@ export default function MatchupUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
+              team1,
               team1_hc,
               team1_oc,
               team1_dc,
+              team1_score,
+              team2,
               team2_hc,
               team2_oc,
               team2_dc: value,
-              turnover_dif,
-              team1_score,
               team2_score,
+              injury,
+              tanking,
+              turnover_dif,
             };
             const result = onChange(modelFields);
             value = result?.team2_dc ?? value;
@@ -372,70 +575,6 @@ export default function MatchupUpdateForm(props) {
         {...getOverrideProps(overrides, "team2_dc")}
       ></TextField>
       <TextField
-        label="Turnover dif"
-        isRequired={true}
-        isReadOnly={false}
-        value={turnover_dif}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              team1_hc,
-              team1_oc,
-              team1_dc,
-              team2_hc,
-              team2_oc,
-              team2_dc,
-              turnover_dif: value,
-              team1_score,
-              team2_score,
-            };
-            const result = onChange(modelFields);
-            value = result?.turnover_dif ?? value;
-          }
-          if (errors.turnover_dif?.hasError) {
-            runValidationTasks("turnover_dif", value);
-          }
-          setTurnover_dif(value);
-        }}
-        onBlur={() => runValidationTasks("turnover_dif", turnover_dif)}
-        errorMessage={errors.turnover_dif?.errorMessage}
-        hasError={errors.turnover_dif?.hasError}
-        {...getOverrideProps(overrides, "turnover_dif")}
-      ></TextField>
-      <TextField
-        label="Team1 score"
-        isRequired={true}
-        isReadOnly={false}
-        value={team1_score}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              team1_hc,
-              team1_oc,
-              team1_dc,
-              team2_hc,
-              team2_oc,
-              team2_dc,
-              turnover_dif,
-              team1_score: value,
-              team2_score,
-            };
-            const result = onChange(modelFields);
-            value = result?.team1_score ?? value;
-          }
-          if (errors.team1_score?.hasError) {
-            runValidationTasks("team1_score", value);
-          }
-          setTeam1_score(value);
-        }}
-        onBlur={() => runValidationTasks("team1_score", team1_score)}
-        errorMessage={errors.team1_score?.errorMessage}
-        hasError={errors.team1_score?.hasError}
-        {...getOverrideProps(overrides, "team1_score")}
-      ></TextField>
-      <TextField
         label="Team2 score"
         isRequired={true}
         isReadOnly={false}
@@ -444,15 +583,20 @@ export default function MatchupUpdateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
+              team1,
               team1_hc,
               team1_oc,
               team1_dc,
+              team1_score,
+              team2,
               team2_hc,
               team2_oc,
               team2_dc,
-              turnover_dif,
-              team1_score,
               team2_score: value,
+              injury,
+              tanking,
+              turnover_dif,
             };
             const result = onChange(modelFields);
             value = result?.team2_score ?? value;
@@ -466,6 +610,117 @@ export default function MatchupUpdateForm(props) {
         errorMessage={errors.team2_score?.errorMessage}
         hasError={errors.team2_score?.hasError}
         {...getOverrideProps(overrides, "team2_score")}
+      ></TextField>
+      <TextField
+        label="Injury"
+        isRequired={false}
+        isReadOnly={false}
+        value={injury}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              team1,
+              team1_hc,
+              team1_oc,
+              team1_dc,
+              team1_score,
+              team2,
+              team2_hc,
+              team2_oc,
+              team2_dc,
+              team2_score,
+              injury: value,
+              tanking,
+              turnover_dif,
+            };
+            const result = onChange(modelFields);
+            value = result?.injury ?? value;
+          }
+          if (errors.injury?.hasError) {
+            runValidationTasks("injury", value);
+          }
+          setInjury(value);
+        }}
+        onBlur={() => runValidationTasks("injury", injury)}
+        errorMessage={errors.injury?.errorMessage}
+        hasError={errors.injury?.hasError}
+        {...getOverrideProps(overrides, "injury")}
+      ></TextField>
+      <TextField
+        label="Tanking"
+        isRequired={false}
+        isReadOnly={false}
+        value={tanking}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              team1,
+              team1_hc,
+              team1_oc,
+              team1_dc,
+              team1_score,
+              team2,
+              team2_hc,
+              team2_oc,
+              team2_dc,
+              team2_score,
+              injury,
+              tanking: value,
+              turnover_dif,
+            };
+            const result = onChange(modelFields);
+            value = result?.tanking ?? value;
+          }
+          if (errors.tanking?.hasError) {
+            runValidationTasks("tanking", value);
+          }
+          setTanking(value);
+        }}
+        onBlur={() => runValidationTasks("tanking", tanking)}
+        errorMessage={errors.tanking?.errorMessage}
+        hasError={errors.tanking?.hasError}
+        {...getOverrideProps(overrides, "tanking")}
+      ></TextField>
+      <TextField
+        label="Turnover dif"
+        isRequired={false}
+        isReadOnly={false}
+        value={turnover_dif}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              team1,
+              team1_hc,
+              team1_oc,
+              team1_dc,
+              team1_score,
+              team2,
+              team2_hc,
+              team2_oc,
+              team2_dc,
+              team2_score,
+              injury,
+              tanking,
+              turnover_dif: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.turnover_dif ?? value;
+          }
+          if (errors.turnover_dif?.hasError) {
+            runValidationTasks("turnover_dif", value);
+          }
+          setTurnover_dif(value);
+        }}
+        onBlur={() => runValidationTasks("turnover_dif", turnover_dif)}
+        errorMessage={errors.turnover_dif?.errorMessage}
+        hasError={errors.turnover_dif?.hasError}
+        {...getOverrideProps(overrides, "turnover_dif")}
       ></TextField>
       <Flex
         justifyContent="space-between"
