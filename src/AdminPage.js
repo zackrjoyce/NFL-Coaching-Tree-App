@@ -3,6 +3,7 @@ import { API, graphqlOperation } from 'aws-amplify';
 import awsconfig from './aws-exports';
 import './AdminPage.css'; // Import the CSS file
 import ExcelReader from './ExcelReader';
+import Popup from 'react-popup';
 
 const AdminPage = () => {
     const [data, setData] = useState(null);
@@ -77,7 +78,7 @@ const AdminPage = () => {
                 console.log('Mutation response:', response);
 
                 // You can choose to update the data state if needed
-                fetchData(selectedTeam);
+                Popup.alert('Coaching tree updated.');
             } catch (error) {
                 console.error("Error updating data:", error);
             }

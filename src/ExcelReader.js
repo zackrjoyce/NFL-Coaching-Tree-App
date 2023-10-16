@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { API, graphqlOperation } from 'aws-amplify';
 import * as XLSX from 'xlsx';
+import Popup from 'react-popup';
 
 class ExcelReader extends Component {
     state = {
@@ -103,6 +104,7 @@ class ExcelReader extends Component {
 
             // Data uploaded successfully, you can perform additional actions here
             console.log('All data uploaded successfully');
+            Popup.alert('New data uploaded successfully.');
         } catch (error) {
             console.error('Error uploading data:', error);
         } finally {

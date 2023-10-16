@@ -1,7 +1,4 @@
-/* UserPage.css */
-
-/* Add styles specific to UserPage */
-
+/* Default styles for larger screens */
 .container {
     display: flex;
     flex-direction: row;
@@ -33,34 +30,42 @@
     left: 0;
     right: 0;
     margin: 0 auto;
-    top: 60%; /* Position it vertically halfway between the top and bottom */
-    transform: translateY(-60%); /* Adjust to center vertically */
+    top: 60%;
+    transform: translateY(-60%);
     text-align: center;
 }
 
 .scrollView {
     margin: 0 auto;
     padding: 20px;
-    background-color: #fff; /* Background color for the scroll view container */
-    box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.2); /* Optional: Add a shadow effect */
+    background-color: #fff;
+    box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
     height: 300px;
 }
 
-.button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+/* Media query for smaller screens (e.g., mobile devices) */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        padding: 10px;
+    }
 
-.button:hover {
-    background-color: #0056b3;
-}
+    .centerText {
+        font-size: 20px;
+    }
 
-/* Add more styles as needed */
+    .stringSelector {
+        font-size: 14px;
+    }
+
+    .scrollViewContainer {
+        top: 40%;
+        transform: translateY(-40%);
+    }
+
+    .scrollView {
+        padding: 10px;
+        height: auto; /* Let it expand to fit content */
+    }
+}
